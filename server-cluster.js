@@ -1,12 +1,25 @@
-import { availableParallelism } from 'node:os';
+import { availableParallelism, cpus } from 'node:os';
 import cluster from 'node:cluster';
 import express from 'express';
 
 const numCPUs = availableParallelism();
-console.log(`Number of CPUs: ${numCPUs} and this is the PID: ${process.pid}`);
+
+// Function to get CPU core information
+function getCPUInfo() {
+    const cpuUsage = process.cpuUsage();
+    const cpuInfo = cpus();
+    return {
+        cores: cpuInfo.length,
+        model: cpuInfo[0]?.model || 'Unknown',
+        speed: cpuInfo[0]?.speed || 'Unknown'
+    };
+}
+
+const cpuInfo = getCPUInfo();
+console.log(`Number of CPUs: ${numCPUs}, Total cores: ${cpuInfo.cores}, CPU Model: ${cpuInfo.model}, Speed: ${cpuInfo.speed}MHz, PID: ${process.pid}`);
 
 if (cluster.isPrimary) {
-    console.log(`Primary ${process.pid} is running`);
+    console.log(`Primary process ${process.pid} is running on core ${process.pid % cpuInfo.cores}`);
 
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork();
@@ -23,7 +36,7 @@ if (cluster.isPrimary) {
         });
     });
     app.listen(3000, () => {
-        console.log(`Worker ${process.pid} started`);
+        console.log(`Worker ${process.pid} started on core ${process.pid % cpuInfo.cores}`);
     });
-    console.log(`Worker ${process.pid} started`);
+    console.log(`Worker ${process.pid} started on core ${process.pid % cpuInfo.cores}`);
 }
