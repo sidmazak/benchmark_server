@@ -3,6 +3,7 @@ import cluster from 'node:cluster';
 import express from 'express';
 
 const numCPUs = availableParallelism();
+console.log(`Number of CPUs: ${numCPUs} and this is the PID: ${process.pid}`);
 
 if (cluster.isPrimary) {
     console.log(`Primary ${process.pid} is running`);
