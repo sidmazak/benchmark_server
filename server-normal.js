@@ -4,7 +4,7 @@ const app = express();
 
 app.get('/', (req, res) => {
     let sum = 0;
-    for (let i = 0; i < 1000000000; i++) {
+    for (let i = 0; i < 100000; i++) {
         sum += i;
     }
     res.send({
