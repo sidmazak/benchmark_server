@@ -9,6 +9,9 @@ A Node.js Express server designed for performance benchmarking and load testing 
 - **CPU Information Logging** - Displays CPU cores, model, and speed information
 - **Docker Support** - Containerized deployment with Dockerfile
 - **Load Testing Ready** - Optimized for autocannon benchmarking
+- **Multiple Test Endpoints** - Various endpoints for different testing scenarios
+- **Health Monitoring** - Built-in health check and server statistics endpoints
+- **Performance Testing** - CPU and memory intensive endpoints for stress testing
 
 ## 📋 Prerequisites
 
@@ -85,6 +88,24 @@ autocannon -c 500 -d 30 -w 2 http://localhost:3000
 autocannon -R 1000 -d 10 http://localhost:3000
 ```
 
+### Specific Endpoint Testing
+```bash
+# Test CPU-intensive endpoint
+autocannon -c 100 -d 10 http://localhost:3000/api/cpu-intensive
+
+# Test memory-intensive endpoint
+autocannon -c 100 -d 10 http://localhost:3000/api/memory-intensive
+
+# Test slow endpoint with delays
+autocannon -c 50 -d 10 http://localhost:3000/api/slow?delay=500
+
+# Test POST endpoint
+autocannon -c 100 -d 10 -m POST -H "Content-Type: application/json" -b '{"test": "data"}' http://localhost:3000/api/echo
+
+# Test health endpoint
+autocannon -c 200 -d 10 http://localhost:3000/health
+```
+
 ### Compare Both Servers
 
 1. **Start Single Process Server:**
@@ -122,7 +143,23 @@ The cluster server should typically show:
 - `WORKERS` - Number of cluster workers (default: CPU cores)
 
 ### Server Endpoints
-- `GET /` - Returns a computed sum (CPU-intensive operation for testing)
+
+#### Basic Endpoints
+- `GET /` - Simple JSON response with server info
+- `GET /health` - Health check with server status and metrics
+- `GET /api/stats` - Detailed server statistics and system information
+
+#### Data Endpoints
+- `GET /api/data` - JSON response with sample data array
+- `POST /api/echo` - Echo endpoint for testing POST requests
+
+#### Performance Testing Endpoints
+- `GET /api/cpu-intensive?iterations=1000000` - CPU-intensive mathematical operations
+- `GET /api/memory-intensive?size=1000000` - Memory-intensive array operations
+- `GET /api/slow?delay=1000` - Configurable delayed response (simulates slow operations)
+
+#### Error Testing Endpoints
+- `GET /api/error?type=500` - Simulated error responses (400, 500, etc.)
 
 ## 📝 Project Structure
 
@@ -142,14 +179,27 @@ benchmark_server/
 - **CPU Utilization Analysis** - Understand multi-core performance
 - **Docker Performance** - Benchmark containerized applications
 - **Development** - Quick server setup for testing
+- **API Testing** - Test various endpoint types (GET, POST, error handling)
+- **Resource Stress Testing** - Test CPU and memory intensive operations
+- **Latency Testing** - Test delayed response scenarios
 
 ## 🔍 Monitoring
 
-The servers log detailed information including:
-- Process ID (PID)
-- CPU core assignment
-- CPU model and speed
+The servers provide comprehensive monitoring capabilities:
+
+### Console Logging
+- Process ID (PID) and CPU core assignment
+- CPU model and speed information
 - Worker process information (cluster mode)
+- Request logging with timestamps and IP addresses
+
+### Health Endpoints
+- `/health` - Basic health status and system metrics
+- `/api/stats` - Detailed server statistics including:
+  - Uptime and memory usage
+  - CPU information and load averages
+  - Platform and architecture details
+  - Node.js version information
 
 ## 📚 Additional Resources
 
