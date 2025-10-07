@@ -12,5 +12,8 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0"
   }
 }
